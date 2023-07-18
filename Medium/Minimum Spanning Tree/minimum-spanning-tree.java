@@ -32,44 +32,86 @@ public class Main{
 
 
 // User function Template for Java
+class DisjointSet
+{
+    ArrayList<Integer> parent=new ArrayList<>();
+    ArrayList<Integer> rank=new ArrayList<>();
+    DisjointSet(int n)
+    {
+        for(int i=0;i<=n;i++)
+        {
+            parent.add(i);
+            rank.add(0);
+        }
+    }
+    int findparent(int n)
+    {
+        if(n==parent.get(n))
+        return n;
+        else
+        {
+            int t=findparent(parent.get(n));
+            parent.set(n,t);
+            return parent.get(n);
+        }
+    }
+    void unionbyrank(int u,int v)
+    {
+        int ulp_u=findparent(u);
+        int ulp_v=findparent(v);
+        if(ulp_u==ulp_v)
+        return;
+        if(rank.get(ulp_u)<rank.get(ulp_v))
+        {
+            parent.set(ulp_u,ulp_v);
+        }
+        else if(rank.get(ulp_u)>rank.get(ulp_v))
+        {
+            parent.set(ulp_v,ulp_u);
+        }
+        else
+        {
+            parent.set(ulp_v,ulp_u);
+            rank.set(ulp_u,rank.get(ulp_u)+1);
+        }
+    }
+}
 class Pair
 {
-    int w,n;
-    Pair(int a,int b)
+    int u,v,w;
+    Pair(int x,int y,int z)
     {
-        w=a;
-        n=b;
+        u=x;
+        v=y;
+        w=z;
+    }
+}
+class paircomp implements Comparator<Pair>
+{
+    public int compare(Pair i,Pair j)
+    {
+        if(i.w<j.w)
+        return -1;
+        else
+        return 1;
     }
 }
 class Solution{
 	static int spanningTree(int V, int E, int edges[][]){
-	    PriorityQueue<Pair> pq=new PriorityQueue<>((x,y) -> x.w-y.w);
-	    ArrayList<ArrayList<Pair>> adj=new ArrayList<>();
-	    for(int i=0;i<V;i++)
-	    adj.add(new ArrayList<Pair>());
-	    int v[]=new int[V];
-	    for(int i[]:edges)
+	    PriorityQueue<Pair> pq=new PriorityQueue<>(new paircomp());
+	    DisjointSet ds=new DisjointSet(V);
+	    for(int i=0;i<edges.length;i++)
 	    {
-	    adj.get(i[0]).add(new Pair(i[2],i[1]));
-	    adj.get(i[1]).add(new Pair(i[2],i[0]));
+	    pq.add(new Pair(edges[i][0],edges[i][1],edges[i][2]));
 	    }
-	    pq.add(new Pair(0,0));
 	    int sum=0;
 	    while(!pq.isEmpty())
 	    {
 	        Pair t=pq.poll();
-	        int w=t.w;
-	        int n=t.n;
-	        if(v[n]==1)
-	        continue;
-	        v[n]=1;
-	        sum+=w;
-	        for(Pair i: adj.get(n))
+	        if(ds.findparent(t.u)!=ds.findparent(t.v))
 	        {
-	            if(v[i.n]==0)
-	            {
-	                pq.add(new Pair(i.w,i.n));
-	            }
+	            sum+=t.w;
+	            ds.unionbyrank(t.u,t.v);
 	        }
 	    }
 	    return sum;
