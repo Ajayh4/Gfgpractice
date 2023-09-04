@@ -38,7 +38,6 @@ class GFG{
 
 
 //User function Template for Java
-
 class Pair
 {
     int x,y;
@@ -49,40 +48,39 @@ class Pair
     }
 }
 class Solution{
-    static char[][] fill(int r, int c, char a[][])
+    static char[][] fill(int n, int m, char a[][])
     {
         // code here
-        int dx[]={-1,0,1,0};
-        int dy[]={0,1,0,-1};
-        int v[][]=new int[r][c];
-        for(int i=0;i<r;i++)
+        int v[][]=new int[n][m];
+        for(int i=0;i<n;i++)
         {
-            for(int j=0;j<c;j++)
+            for(int j=0;j<m;j++)
             {
                 if(a[i][j]=='O' && v[i][j]==0)
                 {
-                    Pair ob=new Pair(i,j);
+                    v[i][j]=1;
                     Queue<Pair> q=new LinkedList<>();
-                    q.add(ob);
-                    int f=1;
+                    q.add(new Pair(i,j));
                     ArrayList<Pair> ar=new ArrayList<>();
+                    int f=1;
                     while(!q.isEmpty())
                     {
                         Pair t=q.poll();
-                        int l=t.x;
-                        int m=t.y;
+                        if(t.x==0 || t.x==(n-1) || t.y==0 || t.y==(m-1))
+                        {
+                            f=0;
+                        }
                         ar.add(t);
-                        if(l==0 || l==(r-1) || m==0 || m==(c-1))
-                        f=0;
+                        int dx[]={-1,0,1,0};
+                        int dy[]={0,1,0,-1};
                         for(int k=0;k<4;k++)
                         {
-                            int s=l+dx[k];
-                            int e=m+dy[k];
-                            if(s>=0 && s<r && e>=0 && e<c && a[s][e]=='O' && v[s][e]==0)
+                            int l=dx[k]+t.x;
+                            int r=dy[k]+t.y;
+                            if(l>=0 && l<n && r>=0 && r<m && v[l][r]==0 && a[l][r]=='O')
                             {
-                                Pair tem=new Pair(s,e);
-                                q.add(tem);
-                                v[s][e]=1;
+                                v[l][r]=1;
+                                q.add(new Pair(l,r));
                             }
                         }
                     }
