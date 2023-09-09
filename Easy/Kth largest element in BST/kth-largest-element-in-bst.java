@@ -116,7 +116,6 @@ class Node
 */
 class Solution
 {
-    // return the Kth largest element in the given BST rooted at 'root'
     static ArrayList<Integer> a;
     static void rec(Node root)
     {
