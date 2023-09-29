@@ -11,83 +11,78 @@ import java.io.*;
 
 class GFG {
     public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
-        int T = sc.nextInt();
+        BufferedReader in=new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out=new PrintWriter(System.out);
+        int T = Integer.parseInt(in.readLine());
         while (T-- > 0) {
-            int n = sc.nextInt();
-            int m = sc.nextInt();
-            int[][] grid = new int[n][m];
-
+            String s[] = in.readLine().trim().split(" ");
+            int n = Integer.parseInt(s[0]);
+            int m = Integer.parseInt(s[1]);
+            int a[][] = new int[n][m];
             for (int i = 0; i < n; i++) {
-
+                s = in.readLine().trim().split(" ");
                 for (int j = 0; j < m; j++) {
-                    grid[i][j] = sc.nextInt();
+                    a[i][j] = Integer.parseInt(s[j]);
                 }
             }
-
             Solution ob = new Solution();
-            int ans = ob.numberOfEnclaves(grid);
-            System.out.println(ans);
+            out.println(ob.numberOfEnclaves(a));
         }
+        out.close();
     }
 }
 // } Driver Code Ends
 
 
 // User function Template for Java
-
-class Solution {
-    class Pair
+class Pair
+{
+    int x,y;
+    Pair(int a,int b)
     {
-        int x,y;
-        Pair(int a,int b)
-        {
-            x=a;
-            y=b;
-        }
+        x=a;
+        y=b;
     }
+}
+class Solution {
+
     int numberOfEnclaves(int[][] grid) {
-        // Your code here
-        int r=grid.length;
-        int c=grid[0].length;
-        int ans=0;
+        int r=grid.length,c=grid[0].length;
         int v[][]=new int[r][c];
-        int dx[]={-1,0,1,0};
-        int dy[]={0,1,0,-1};
+        int ans=0;
+        Queue<Pair> q=new LinkedList<>();
         for(int i=0;i<r;i++)
         {
             for(int j=0;j<c;j++)
             {
-                if(grid[i][j]==1 && v[i][j]==0){
-                    Queue<Pair> q=new LinkedList<>();
-                    Pair obj=new Pair(i,j);
-                    q.add(obj);
-                    int x=0,f=1;
+                if(grid[i][j]==1 && v[i][j]==0)
+                {
+                    q.add(new Pair(i,j));
                     v[i][j]=1;
+                    int cnt=0,f=1;
                     while(!q.isEmpty())
                     {
+                        int dx[]={0,-1,0,1};
+                        int dy[]={1,0,-1,0};
                         Pair t=q.poll();
-                        int l=t.x;
-                        int m=t.y;
-                        if(l==0 || l==(r-1) || m==0 || m==(c-1))
-                        f=0;
-                        x+=1;
+                        cnt+=1;
+                        if(t.x==0 || t.x==(r-1) || t.y==0 || t.y==(c-1))
+                        {
+                            f=0;
+                        }
                         for(int k=0;k<4;k++)
                         {
-                            int p=l+dx[k];
-                            int s=m+dy[k];
-                            if(p>=0 && p<r && s>=0 && s<c && grid[p][s]==1 && v[p][s]==0)
+                            int l=t.x+dx[k];
+                            int m=t.y+dy[k];
+                            if(l>=0 && l<r && m>=0 && m<c && v[l][m]==0 && grid[l][m]==1)
                             {
-                                Pair tem=new Pair(p,s);
-                                q.add(tem);
-                                v[p][s]=1;
+                                v[l][m]=1;
+                                q.add(new Pair(l,m));
                             }
                         }
                     }
                     if(f==1)
-                    {
-                        ans+=x;
-                    }
+                    ans+=cnt;
                 }
             }
         }
